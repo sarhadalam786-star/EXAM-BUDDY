@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Questions</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2 id="title"></h2>
+  <div id="questionContainer"></div>
+  <button id="submitBtn">Submit</button>
+  <p id="result"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDcEEmCuq6aZd1d2VMukauxdvVeH1HEmDo",
+      authDomain: "exambuddy-1345s.firebaseapp.com",
+      projectId: "exambuddy-1345s",
+      storageBucket: "exambuddy-1345s.firebasestorage.app",
+      messagingSenderId: "475490696319",
+      appId: "1:475490696319:web:beda1788d8c755ed00934a",
+      measurementId: "G-8JRV3L2LXQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Get selections
+    const userLoggedIn = localStorage.getItem("userLoggedIn");
+    const cls = localStorage.getItem("selectedClass");
+    const board = localStorage.getItem("selectedBoard");
+    const stream = localStorage.getItem("selectedStream");
+    const scienceCombo = localStorage.getItem("scienceCombo");
+    const subject = localStorage.getItem("selectedSubject");
+
+    if (!userLoggedIn) {
+      alert("Please login first!");
+      window.location.href = "login.html";
+    }
+
+    if (!cls || !board || !subject) {
+      alert("Please select class, board, and subject first!");
+      window.location.href = "class.html";
+    }
+
+    document.getElementById("title").innerText = 
+      `Class ${cls} (${board}) ${stream ? "- " + stream : ""} ${scienceCombo ? "- " + scienceCombo : ""} - ${subject}`;
+
+    const questionContainer = document.getElementById("questionContainer");
+    let questions = [];
+
+    // Fetch questions from Firestore
+    async function loadQuestions() {
+      const qRef = collection(db, "questions");
+      const qSnap = await getDocs(query(qRef, where("subject", "==", subject), where("class", "==", cls)));
+      
+      qSnap.forEach(doc => {
+        questions.push(doc.data());
+      });
+
+      // If no questions found, generate dummy ones
+      if (questions.length === 0) {
+        for (let i = 1; i <= 100; i++) {
+          questions.push({
+            q: `Question ${i} for ${subject}?`,
+            options: ["Option A", "Option B", "Option C", "Option D"],
+            answer: "Option A"
+          });
+        }
+      }
+
+      renderQuestions();
+    }
+
+    function renderQuestions() {
+      questions.forEach((ques, index) => {
+        const div = document.createElement("div");
+        div.className = "questionCard";
+
+        const qTitle = document.createElement("p");
+        qTitle.innerText = `${index + 1}. ${ques.q}`;
+        div.appendChild(qTitle);
+
+        ques.options.forEach(opt => {
+          const label = document.createElement("label");
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `q${index}`;
+          radio.value = opt;
+          label.appendChild(radio);
+          label.append(` ${opt}`);
+          div.appendChild(label);
+          div.appendChild(document.createElement("br"));
+        });
+
+        questionContainer.appendChild(div);
+        questionContainer.appendChild(document.createElement("hr"));
+      });
+    }
+
+    // Submit answers
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      let score = 0;
+      questions.forEach((ques, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && selected.value === ques.answer) score++;
+      });
+      document.getElementById("result").innerText = `You scored ${score} out of ${questions.length}`;
+    });
+
+    loadQuestions();
+  </script>
+
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    .questionCard { text-align: left; margin: 20px auto; width: 60%; }
+    #submitBtn { padding: 10px 20px; font-size: 16px; margin: 20px; cursor: pointer; }
+  </style>
+</body>
+</html>

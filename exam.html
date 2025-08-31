@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExamBuddy - Exam</title>
+</head>
+<body>
+  <h2 id="courseTitle">Exam</h2>
+
+  <div id="questionContainer"></div>
+  <button onclick="submitAnswer()">Submit Answer</button>
+
+  <p id="result"></p>
+
+  <script>
+    // Get course name from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const course = urlParams.get("course");
+    document.getElementById("courseTitle").innerText = course + " Exam";
+
+    // Simple question set (we’ll expand later)
+    const questions = {
+      Math: {
+        q: "What is 5 + 3?",
+        options: ["6", "7", "8", "9"],
+        answer: "8"
+      },
+      Science: {
+        q: "What planet is known as the Red Planet?",
+        options: ["Earth", "Mars", "Venus", "Jupiter"],
+        answer: "Mars"
+      },
+      History: {
+        q: "Who was the first President of the USA?",
+        options: ["George Washington", "Abraham Lincoln", "John Adams", "Thomas Jefferson"],
+        answer: "George Washington"
+      }
+    };
+
+    const current = questions[course];
+    const container = document.getElementById("questionContainer");
+
+    // Display question + options
+    container.innerHTML = `
+      <p>${current.q}</p>
+      ${current.options.map(opt => 
+        `<label><input type="radio" name="answer" value="${opt}"> ${opt}</label><br>`
+      ).join("")}
+    `;
+
+    // Handle submit
+    function submitAnswer() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        alert("Please select an answer!");
+        return;
+      }
+      if (selected.value === current.answer) {
+        document.getElementById("result").innerText = "✅ Correct!";
+      } else {
+        document.getElementById("result").innerText = "❌ Wrong! Correct answer: " + current.answer;
+      }
+    }
+  </script>
+</body>
+</html>

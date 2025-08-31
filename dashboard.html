@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ExamBuddy – Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div>
+        <h2 id="title">Dashboard</h2>
+        <p class="muted" id="crumbs"></p>
+      </div>
+      <button id="logoutBtn" class="ghost">Logout</button>
+    </div>
+
+    <div id="chapters"></div>
+  </div>
+
+  <script>
+    // TODO: paste YOUR config here
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Guard route: redirect to login if not signed in
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        boot();
+      }
+    });
+
+    // Sample content (we’ll move to Firestore later)
+    const content = {
+      CBSE: {
+        10: {
+          Math: [
+            { chapter: "Real Numbers", summary: "Euclid’s division lemma, Fundamental Theorem of Arithmetic.", qna: "Ex 1.2 Q1–Q5: HCF & LCM via prime factorization." },
+            { chapter: "Polynomials", summary: "Zeros, relationships between coefficients and zeros.", qna: "Finding zeros & graph shape." }
+          ],
+          Science: [
+            { chapter: "Chemical Reactions", summary: "Types: combination, decomposition, displacement.", qna: "Balance equations & identify reaction types." }
+          ]
+        }
+      },
+      ICSE: {
+        10: {
+          Math: [
+            { chapter: "Mensuration", summary: "Surface area & volume of 3D shapes.", qna: "Sphere SA = 4πr²; Volume = 4/3 πr³." }
+          ]
+        }
+      }
+    };
+
+    function boot(){
+      const board = localStorage.getItem('board');
+      const cls   = localStorage.getItem('class');
+      const sub   = localStorage.getItem('subject');
+      document.getElementById('crumbs').textContent = `${board || '-'} ▸ Class ${cls || '-'} ▸ ${sub || '-'}`;
+      document.getElementById('title').textContent = `${sub || 'Subject'} – Chapters`;
+
+      const wrap = document.getElementById('chapters');
+      wrap.innerHTML = '';
+
+      const items = (((content[board]||{})[cls]||{})[sub]) || [];
+      if(!items.length){
+        wrap.innerHTML = `<div class="empty">No chapters loaded yet. We’ll add them soon!</div>`;
+        return;
+      }
+      items.forEach(item=>{
+        const card = document.createElement('div');
+        card.className = 'chapter';
+        card.innerHTML = `
+          <div class="chapter-title">${item.chapter}</div>
+          <div class="chapter-content">
+            <p><strong>Summary:</strong> ${item.summary}</p>
+            <p><strong>Q&A (exam-focused):</strong> ${item.qna}</p>
+          </div>`;
+        card.querySelector('.chapter-title').onclick = () => {
+          const cc = card.querySelector('.chapter-content');
+          cc.style.display = cc.style.display === 'block' ? 'none' : 'block';
+        };
+        wrap.appendChild(card);
+      });
+    }
+
+    document.getElementById('logoutBtn').onclick = async () => {
+      await auth.signOut();
+      // (optional) clear selection
+      // localStorage.clear();
+      window.location.href = 'index.html';
+    };
+  </script>
+</body>
+</html>

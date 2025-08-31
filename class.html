@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ExamBuddy - Login / Signup</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* General Body */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    /* Card Container */
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 350px;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Tab Buttons */
+    .tab-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .tab-buttons button {
+      flex: 1;
+      padding: 10px 0;
+      border: none;
+      background: #e0e0e0;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    .tab-buttons button.active {
+      background: #007BFF;
+      color: #fff;
+    }
+
+    /* Forms */
+    form {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+    }
+    form.active {
+      display: flex;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin: auto;
+    }
+    button.submit-btn {
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    button.submit-btn:hover {
+      background: #0056b3;
+    }
+
+    /* Messages */
+    #message {
+      margin-top: 15px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>ExamBuddy</h2>
+
+    <div class="tab-buttons">
+      <button id="loginTab" class="active">Login</button>
+      <button id="signupTab">Signup</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="active">
+      <input type="email" id="loginEmail" placeholder="Enter Email" required>
+      <input type="password" id="loginPassword" placeholder="Enter Password" required>
+      <button type="submit" class="submit-btn">Login</button>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signupForm">
+      <input type="email" id="signupEmail" placeholder="Enter Email" required>
+      <input type="password" id="signupPassword" placeholder="Enter Password" required>
+      <button type="submit" class="submit-btn">Signup</button>
+    </form>
+
+    <p id="message"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDcEEmCuq6aZd1d2VMukauxdvVeH1HEmDo",
+      authDomain: "exambuddy-1345s.firebaseapp.com",
+      projectId: "exambuddy-1345s",
+      storageBucket: "exambuddy-1345s.firebasestorage.app",
+      messagingSenderId: "475490696319",
+      appId: "1:475490696319:web:beda1788d8c755ed00934a",
+      measurementId: "G-8JRV3L2LXQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const message = document.getElementById("message");
+
+    // Tab buttons
+    const loginTab = document.getElementById("loginTab");
+    const signupTab = document.getElementById("signupTab");
+
+    loginTab.addEventListener("click", () => {
+      loginTab.classList.add("active");
+      signupTab.classList.remove("active");
+      loginForm.classList.add("active");
+      signupForm.classList.remove("active");
+      message.innerText = "";
+    });
+
+    signupTab.addEventListener("click", () => {
+      signupTab.classList.add("active");
+      loginTab.classList.remove("active");
+      signupForm.classList.add("active");
+      loginForm.classList.remove("active");
+      message.innerText = "";
+    });
+
+    // Handle Login
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          message.style.color = "green";
+          message.innerText = "✅ Login Successful!";
+          localStorage.setItem("loggedInUser", email);
+          setTimeout(() => {
+            window.location.href = "class.html";
+          }, 1000);
+        })
+        .catch((err) => {
+          message.style.color = "red";
+          message.innerText = "❌ " + err.message;
+        });
+    });
+
+    // Handle Signup
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          message.style.color = "green";
+          message.innerText = "✅ Signup Successful! Please login.";
+          signupForm.reset();
+          loginTab.click(); // switch to login
+        })
+        .catch((err) => {
+          message.style.color = "red";
+          message.innerText = "❌ " + err.message;
+        });
+    });
+  </script>
+</body>
+</html>
