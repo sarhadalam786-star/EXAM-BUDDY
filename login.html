@@ -14,13 +14,10 @@
     <p id="message" style="color:red; display:none;"></p>
   </div>
 
-  <!-- Firebase SDK -->
   <script type="module">
-    // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDcEEmCuq6aZd1d2VMukauxdvVeH1HEmDo",
       authDomain: "exambuddy-1345s.firebaseapp.com",
@@ -31,18 +28,16 @@
       measurementId: "G-8JRV3L2LXQ"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // Google Sign-In
     document.getElementById("googleBtn").addEventListener("click", () => {
       signInWithPopup(auth, provider)
         .then((result) => {
           const user = result.user;
           localStorage.setItem("loggedInUser", user.displayName || user.email);
-          window.location.href = "class.html"; // redirect to class selection
+          window.location.href = "class.html"; // direct to class selection
         })
         .catch((error) => {
           console.error(error);
@@ -71,15 +66,8 @@
       text-align: center;
       width: 350px;
     }
-    h1 {
-      margin-bottom: 10px;
-      color: #007BFF;
-    }
-    p {
-      margin-bottom: 30px;
-      font-size: 14px;
-      color: #555;
-    }
+    h1 { margin-bottom: 10px; color: #007BFF; }
+    p { margin-bottom: 30px; font-size: 14px; color: #555; }
     button {
       background: #4285F4;
       color: white;
@@ -90,9 +78,7 @@
       font-size: 16px;
       transition: 0.3s;
     }
-    button:hover {
-      background: #3367D6;
-    }
+    button:hover { background: #3367D6; }
   </style>
 </body>
 </html>
