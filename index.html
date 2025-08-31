@@ -9,77 +9,23 @@
   <div class="intro-container">
     <h1>Welcome to ExamBuddy</h1>
     <p>
-      ExamBuddy is your personal companion to streamline learning and exam preparation. 
-      Get access to:
+      ExamBuddy helps you access personalized courses, practice questions, and chapter-wise learning
+      for your class and board. Start learning smarter today!
     </p>
-    <ul>
-      <li>Personalized courses for your class and stream</li>
-      <li>Practice questions and quizzes</li>
-      <li>Track your progress and improve performance</li>
-      <li>Access anytime, anywhere from your browser</li>
-    </ul>
-    <p>
-      Join thousands of students who are preparing smarter, not harder. Your exams just got easier!
-    </p>
-    <button id="continueBtn">Continue to Login</button>
+    <button onclick="goToLogin()">Continue</button>
   </div>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f0f2f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .intro-container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      width: 450px;
-      text-align: center;
-    }
-    h1 {
-      color: #007BFF;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 15px;
-    }
-    ul {
-      text-align: left;
-      margin: 0 auto 20px auto;
-      padding-left: 20px;
-      color: #333;
-    }
-    li {
-      margin-bottom: 10px;
-    }
-    button {
-      background: #007BFF;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-  </style>
-
   <script>
-    document.getElementById("continueBtn").addEventListener("click", () => {
-      window.location.href = "login.html"; // Go to the Google Sign-In page
-    });
+    function goToLogin() {
+      window.location.href = "login.html";
+    }
   </script>
+
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f2f5; margin:0; }
+    .intro-container { background:white; padding:40px; border-radius:15px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); width:400px; }
+    button { padding:12px 20px; font-size:16px; border:none; border-radius:8px; background:#007BFF; color:white; cursor:pointer; transition:0.3s; }
+    button:hover { background:#0056b3; }
+  </style>
 </body>
 </html>

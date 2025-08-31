@@ -7,9 +7,8 @@
 </head>
 <body>
   <div class="login-container">
-    <h1>Welcome to ExamBuddy</h1>
-    <p>Access personalized courses, practice questions, and streamline your learning!</p>
-
+    <h1>Login to ExamBuddy</h1>
+    <p>Sign in with Google to continue.</p>
     <button id="googleBtn">Sign in with Google</button>
     <p id="message" style="color:red; display:none;"></p>
   </div>
@@ -34,13 +33,12 @@
 
     document.getElementById("googleBtn").addEventListener("click", () => {
       signInWithPopup(auth, provider)
-        .then((result) => {
+        .then(result => {
           const user = result.user;
           localStorage.setItem("loggedInUser", user.displayName || user.email);
-          window.location.href = "class.html"; // direct to class selection
+          window.location.href = "class.html";
         })
-        .catch((error) => {
-          console.error(error);
+        .catch(error => {
           const msg = document.getElementById("message");
           msg.style.display = "block";
           msg.innerText = "Google Sign-In failed: " + error.message;
@@ -49,36 +47,10 @@
   </script>
 
   <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-    }
-    .login-container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      text-align: center;
-      width: 350px;
-    }
-    h1 { margin-bottom: 10px; color: #007BFF; }
-    p { margin-bottom: 30px; font-size: 14px; color: #555; }
-    button {
-      background: #4285F4;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.3s;
-    }
-    button:hover { background: #3367D6; }
+    body { font-family: Arial, sans-serif; display: flex; justify-content:center; align-items:center; height:100vh; background:#f0f2f5; margin:0; }
+    .login-container { background:white; padding:40px; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.2); width:350px; text-align:center; }
+    button { background:#4285F4; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px; transition:0.3s; }
+    button:hover { background:#3367D6; }
   </style>
 </body>
 </html>
