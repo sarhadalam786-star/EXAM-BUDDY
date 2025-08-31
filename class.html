@@ -2,198 +2,156 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ExamBuddy - Login / Signup</title>
+  <title>Select Class, Board & Chapter</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* General Body */
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    /* Card Container */
-    .card {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      width: 350px;
-      padding: 30px;
-      text-align: center;
-      position: relative;
-    }
-
-    /* Tab Buttons */
-    .tab-buttons {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 20px;
-    }
-    .tab-buttons button {
-      flex: 1;
-      padding: 10px 0;
-      border: none;
-      background: #e0e0e0;
-      cursor: pointer;
-      border-radius: 8px 8px 0 0;
-      transition: 0.3s;
-      font-weight: bold;
-    }
-    .tab-buttons button.active {
-      background: #007BFF;
-      color: #fff;
-    }
-
-    /* Forms */
-    form {
-      display: none;
-      flex-direction: column;
-      gap: 15px;
-    }
-    form.active {
-      display: flex;
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin: auto;
-    }
-    button.submit-btn {
-      background: #007BFF;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.3s;
-    }
-    button.submit-btn:hover {
-      background: #0056b3;
-    }
-
-    /* Messages */
-    #message {
-      margin-top: 15px;
-      font-weight: bold;
-      color: red;
-    }
-  </style>
 </head>
 <body>
-  <div class="card">
-    <h2>ExamBuddy</h2>
+  <h2>Select Your Class, Board & Chapter</h2>
+  
+  <label for="classSelect">Choose Class:</label>
+  <select id="classSelect" onchange="checkStream()">
+    <option value="">--Select--</option>
+    <option value="8">Class 8</option>
+    <option value="9">Class 9</option>
+    <option value="10">Class 10</option>
+    <option value="11">Class 11</option>
+    <option value="12">Class 12</option>
+  </select>
 
-    <div class="tab-buttons">
-      <button id="loginTab" class="active">Login</button>
-      <button id="signupTab">Signup</button>
-    </div>
+  <br><br>
 
-    <!-- Login Form -->
-    <form id="loginForm" class="active">
-      <input type="email" id="loginEmail" placeholder="Enter Email" required>
-      <input type="password" id="loginPassword" placeholder="Enter Password" required>
-      <button type="submit" class="submit-btn">Login</button>
-    </form>
+  <label for="boardSelect">Choose Board:</label>
+  <select id="boardSelect" onchange="checkChapters()">
+    <option value="">--Select--</option>
+    <option value="CBSE">CBSE</option>
+    <option value="ICSE">ICSE</option>
+  </select>
 
-    <!-- Signup Form -->
-    <form id="signupForm">
-      <input type="email" id="signupEmail" placeholder="Enter Email" required>
-      <input type="password" id="signupPassword" placeholder="Enter Password" required>
-      <button type="submit" class="submit-btn">Signup</button>
-    </form>
+  <br><br>
 
-    <p id="message"></p>
+  <!-- Stream selection (only for 11 & 12) -->
+  <div id="streamSection" style="display:none;">
+    <label for="streamSelect">Choose Stream:</label>
+    <select id="streamSelect" onchange="checkScience()">
+      <option value="">--Select--</option>
+      <option value="Science">Science</option>
+      <option value="Commerce">Commerce</option>
+      <option value="Arts">Arts/Humanities</option>
+    </select>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
-      from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+  <br><br>
 
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDcEEmCuq6aZd1d2VMukauxdvVeH1HEmDo",
-      authDomain: "exambuddy-1345s.firebaseapp.com",
-      projectId: "exambuddy-1345s",
-      storageBucket: "exambuddy-1345s.firebasestorage.app",
-      messagingSenderId: "475490696319",
-      appId: "1:475490696319:web:beda1788d8c755ed00934a",
-      measurementId: "G-8JRV3L2LXQ"
+  <!-- Science combinations -->
+  <div id="scienceCombo" style="display:none;">
+    <label for="scienceSelect">Choose Combination:</label>
+    <select id="scienceSelect">
+      <option value="">--Select--</option>
+      <option value="PCM">PCM (Physics, Chemistry, Math)</option>
+      <option value="PCB">PCB (Physics, Chemistry, Biology)</option>
+      <option value="PCMB">PCMB (Physics, Chemistry, Math, Biology)</option>
+      <option value="CompSci">PCM + Computer Science</option>
+    </select>
+  </div>
+
+  <br><br>
+
+  <!-- Chapter selection -->
+  <div id="chapterSection" style="display:none;">
+    <label for="chapterSelect">Choose Chapter:</label>
+    <select id="chapterSelect">
+      <option value="">--Select--</option>
+      <!-- Chapters will populate dynamically -->
+    </select>
+  </div>
+
+  <br><br>
+  <button onclick="goToCourses()">Next</button>
+
+  <script>
+    const chaptersData = {
+      "8": ["Chapter 1", "Chapter 2", "Chapter 3"],
+      "9": ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4"],
+      "10": ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"],
+      "11": ["Unit 1", "Unit 2", "Unit 3"],
+      "12": ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    function checkStream() {
+      const cls = document.getElementById("classSelect").value;
+      if (cls === "11" || cls === "12") {
+        document.getElementById("streamSection").style.display = "block";
+      } else {
+        document.getElementById("streamSection").style.display = "none";
+        document.getElementById("scienceCombo").style.display = "none";
+      }
+      checkChapters();
+    }
 
-    const loginForm = document.getElementById("loginForm");
-    const signupForm = document.getElementById("signupForm");
-    const message = document.getElementById("message");
+    function checkScience() {
+      const stream = document.getElementById("streamSelect").value;
+      if (stream === "Science") {
+        document.getElementById("scienceCombo").style.display = "block";
+      } else {
+        document.getElementById("scienceCombo").style.display = "none";
+      }
+    }
 
-    // Tab buttons
-    const loginTab = document.getElementById("loginTab");
-    const signupTab = document.getElementById("signupTab");
+    function checkChapters() {
+      const cls = document.getElementById("classSelect").value;
+      if (!cls) return;
 
-    loginTab.addEventListener("click", () => {
-      loginTab.classList.add("active");
-      signupTab.classList.remove("active");
-      loginForm.classList.add("active");
-      signupForm.classList.remove("active");
-      message.innerText = "";
-    });
+      const chapterSection = document.getElementById("chapterSection");
+      const chapterSelect = document.getElementById("chapterSelect");
+      chapterSelect.innerHTML = '<option value="">--Select--</option>';
 
-    signupTab.addEventListener("click", () => {
-      signupTab.classList.add("active");
-      loginTab.classList.remove("active");
-      signupForm.classList.add("active");
-      loginForm.classList.remove("active");
-      message.innerText = "";
-    });
+      chaptersData[cls].forEach(ch => {
+        const opt = document.createElement("option");
+        opt.value = ch;
+        opt.innerText = ch;
+        chapterSelect.appendChild(opt);
+      });
 
-    // Handle Login
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+      chapterSection.style.display = "block";
+    }
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          message.style.color = "green";
-          message.innerText = "✅ Login Successful!";
-          localStorage.setItem("loggedInUser", email);
-          setTimeout(() => {
-            window.location.href = "class.html";
-          }, 1000);
-        })
-        .catch((err) => {
-          message.style.color = "red";
-          message.innerText = "❌ " + err.message;
-        });
-    });
+    function goToCourses() {
+      const selectedClass = document.getElementById("classSelect").value;
+      const selectedBoard = document.getElementById("boardSelect").value;
+      const selectedStream = document.getElementById("streamSelect").value;
+      const scienceOption = document.getElementById("scienceSelect").value;
+      const chapter = document.getElementById("chapterSelect").value;
 
-    // Handle Signup
-    signupForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
+      if (!selectedClass || !selectedBoard || !chapter) {
+        alert("Please select Class, Board, and Chapter!");
+        return;
+      }
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          message.style.color = "green";
-          message.innerText = "✅ Signup Successful! Please login.";
-          signupForm.reset();
-          loginTab.click(); // switch to login
-        })
-        .catch((err) => {
-          message.style.color = "red";
-          message.innerText = "❌ " + err.message;
-        });
-    });
+      if ((selectedClass === "11" || selectedClass === "12") && !selectedStream) {
+        alert("Please select a Stream");
+        return;
+      }
+
+      if (selectedStream === "Science" && !scienceOption) {
+        alert("Please select Science Combination");
+        return;
+      }
+
+      localStorage.setItem("selectedClass", selectedClass);
+      localStorage.setItem("selectedBoard", selectedBoard);
+      localStorage.setItem("selectedStream", selectedStream);
+      localStorage.setItem("scienceCombo", scienceOption);
+      localStorage.setItem("selectedChapter", chapter);
+
+      // Subjects for 8-10
+      let subjects = [];
+      if (selectedClass === "8" || selectedClass === "9" || selectedClass === "10") {
+        subjects = ["Maths", "Science", "English", "Social Science", "Hindi"];
+      }
+      localStorage.setItem("selectedSubjects", JSON.stringify(subjects));
+
+      window.location.href = "courses.html";
+    }
   </script>
 </body>
 </html>

@@ -2,70 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to ExamBuddy</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="intro-container">
-    <h1>Welcome to <span style="color:#007BFF;">ExamBuddy</span></h1>
+    <h1>Welcome to ExamBuddy</h1>
     <p>
-      ExamBuddy is your ultimate companion for acing exams! 🎯<br>
-      From organized study material to practice questions and mock tests, 
-      ExamBuddy helps you stay ahead in your academics.  
-      Whether you are in school or preparing for board exams, our platform 
-      ensures a structured approach to learning and exam preparation.
+      ExamBuddy is your personal companion to streamline learning and exam preparation. 
+      Get access to:
     </p>
+    <ul>
+      <li>Personalized courses for your class and stream</li>
+      <li>Practice questions and quizzes</li>
+      <li>Track your progress and improve performance</li>
+      <li>Access anytime, anywhere from your browser</li>
+    </ul>
     <p>
-      Why choose ExamBuddy?  
-      <ul style="text-align:left; display:inline-block;">
-        <li>Easy-to-use interface for students of all grades.</li>
-        <li>Access to hundreds of questions and resources per subject.</li>
-        <li>Customizable practice based on class, board, and stream.</li>
-        <li>Track your progress and improve consistently.</li>
-      </ul>
+      Join thousands of students who are preparing smarter, not harder. Your exams just got easier!
     </p>
-    <button id="continueBtn">Continue</button>
+    <button id="continueBtn">Continue to Login</button>
   </div>
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin:0; padding:0;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
+      margin: 0;
+      padding: 0;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     .intro-container {
-      background:white;
-      padding:40px;
-      border-radius:15px;
-      box-shadow:0 4px 15px rgba(0,0,0,0.2);
-      max-width:600px;
-      text-align:center;
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      width: 450px;
+      text-align: center;
+    }
+    h1 {
+      color: #007BFF;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+    ul {
+      text-align: left;
+      margin: 0 auto 20px auto;
+      padding-left: 20px;
+      color: #333;
+    }
+    li {
+      margin-bottom: 10px;
     }
     button {
-      margin-top:20px;
-      padding:15px 30px;
-      font-size:18px;
-      background:#007BFF;
-      color:white;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-      transition:0.3s;
+      background: #007BFF;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
     }
     button:hover {
-      background:#0056b3;
+      background: #0056b3;
     }
-    ul {padding-left:20px;}
   </style>
 
   <script>
     document.getElementById("continueBtn").addEventListener("click", () => {
-      window.location.href = "login.html";
+      window.location.href = "login.html"; // Go to the Google Sign-In page
     });
   </script>
 </body>
