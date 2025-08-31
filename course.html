@@ -2,100 +2,141 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Select Subjects - ExamBuddy</title>
+  <title>Select Class, Board & Chapter</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <script>
-    // Login check
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    if (!loggedInUser) {
-      alert("⚠️ Please login first!");
-      window.location.href = "login.html";
-    }
-  </script>
+  <h2>Select Your Class, Board & Chapter</h2>
+  
+  <label for="classSelect">Choose Class:</label>
+  <select id="classSelect" onchange="checkStream(); populateChapters();">
+    <option value="">--Select--</option>
+    <option value="8">Class 8</option>
+    <option value="9">Class 9</option>
+    <option value="10">Class 10</option>
+    <option value="11">Class 11</option>
+    <option value="12">Class 12</option>
+  </select>
 
-  <div class="container">
-    <h2 id="title"></h2>
-    <div id="subjectList"></div>
+  <br><br>
+
+  <label for="boardSelect">Choose Board:</label>
+  <select id="boardSelect" onchange="populateChapters()">
+    <option value="">--Select--</option>
+    <option value="CBSE">CBSE</option>
+    <option value="ICSE">ICSE</option>
+  </select>
+
+  <br><br>
+
+  <!-- Stream selection for class 11 & 12 -->
+  <div id="streamSection" style="display:none;">
+    <label for="streamSelect">Choose Stream:</label>
+    <select id="streamSelect" onchange="checkScience(); populateChapters();">
+      <option value="">--Select--</option>
+      <option value="Science">Science</option>
+      <option value="Commerce">Commerce</option>
+      <option value="Arts">Arts/Humanities</option>
+    </select>
   </div>
 
+  <br><br>
+
+  <!-- Science subject combinations -->
+  <div id="scienceCombo" style="display:none;">
+    <label for="scienceSelect">Choose Combination:</label>
+    <select id="scienceSelect" onchange="populateChapters()">
+      <option value="">--Select--</option>
+      <option value="PCM">PCM</option>
+      <option value="PCB">PCB</option>
+      <option value="PCMB">PCMB</option>
+      <option value="CompSci">PCM + Computer Science</option>
+    </select>
+  </div>
+
+  <br><br>
+
+  <!-- Chapter selection -->
+  <div>
+    <label for="chapterSelect">Choose Chapter:</label>
+    <select id="chapterSelect">
+      <option value="">--Select Chapter--</option>
+    </select>
+  </div>
+
+  <br><br>
+
+  <button onclick="goToCourses()">Next</button>
+
   <script>
-    // Get saved choices
-    const cls = localStorage.getItem("selectedClass");
-    const board = localStorage.getItem("selectedBoard");
-    const stream = localStorage.getItem("selectedStream");
-    const scienceCombo = localStorage.getItem("scienceCombo");
+    const chaptersDB = {
+      "8": { "Maths": ["Chapter 1","Chapter 2"], "Science": ["Ch 1","Ch 2"], "English":["Ch 1","Ch 2"], "Social Science":["Ch 1","Ch 2"], "Hindi":["Ch 1","Ch 2"] },
+      "9": { "Maths": ["Ch 1","Ch 2"], "Science": ["Ch 1","Ch 2"], "English":["Ch 1","Ch 2"], "Social Science":["Ch 1","Ch 2"], "Hindi":["Ch 1","Ch 2"] },
+      "10": { "Maths": ["Ch 1","Ch 2"], "Science": ["Ch 1","Ch 2"], "English":["Ch 1","Ch 2"], "Social Science":["Ch 1","Ch 2"], "Hindi":["Ch 1","Ch 2"] },
+      "11": { "Physics":["Ch 1","Ch 2"], "Chemistry":["Ch 1","Ch 2"], "Maths":["Ch 1","Ch 2"], "Biology":["Ch 1","Ch 2"], "Computer Science":["Ch 1","Ch 2"], "Accountancy":["Ch 1","Ch 2"], "Business Studies":["Ch 1","Ch 2"], "Economics":["Ch 1","Ch 2"], "History":["Ch 1","Ch 2"], "Political Science":["Ch 1","Ch 2"], "Geography":["Ch 1","Ch 2"], "Psychology":["Ch 1","Ch 2"] },
+      "12": { "Physics":["Ch 1","Ch 2"], "Chemistry":["Ch 1","Ch 2"], "Maths":["Ch 1","Ch 2"], "Biology":["Ch 1","Ch 2"], "Computer Science":["Ch 1","Ch 2"], "Accountancy":["Ch 1","Ch 2"], "Business Studies":["Ch 1","Ch 2"], "Economics":["Ch 1","Ch 2"], "History":["Ch 1","Ch 2"], "Political Science":["Ch 1","Ch 2"], "Geography":["Ch 1","Ch 2"], "Psychology":["Ch 1","Ch 2"] }
+    };
 
-    // Redirect if class/board not selected
-    if (!cls || !board) {
-      alert("Please select class and board first!");
-      window.location.href = "class.html";
+    function checkStream() {
+      const cls = document.getElementById("classSelect").value;
+      document.getElementById("streamSection").style.display = (cls === "11" || cls === "12") ? "block" : "none";
+      document.getElementById("scienceCombo").style.display = "none";
     }
 
-    // Show title
-    document.getElementById("title").innerText = 
-      `Hello ${loggedInUser}, Class ${cls} (${board}) ${stream ? "- " + stream : ""} ${scienceCombo ? "- " + scienceCombo : ""}`;
-
-    const subjectDiv = document.getElementById("subjectList");
-    let subjects = [];
-
-    // Classes 8–10 → common subjects
-    if (cls === "8" || cls === "9" || cls === "10") {
-      subjects = ["Maths", "Science", "English", "Social Science", "Hindi"];
+    function checkScience() {
+      const stream = document.getElementById("streamSelect").value;
+      document.getElementById("scienceCombo").style.display = (stream === "Science") ? "block" : "none";
     }
 
-    // Class 11/12 → stream-based
-    if (cls === "11" || cls === "12") {
-      if (stream === "Science") {
-        if (scienceCombo === "PCM") subjects = ["Physics", "Chemistry", "Mathematics", "English"];
-        if (scienceCombo === "PCB") subjects = ["Physics", "Chemistry", "Biology", "English"];
-        if (scienceCombo === "PCMB") subjects = ["Physics", "Chemistry", "Mathematics", "Biology", "English"];
-        if (scienceCombo === "CompSci") subjects = ["Physics", "Chemistry", "Mathematics", "Computer Science", "English"];
-      } 
-      else if (stream === "Commerce") {
-        subjects = ["Accountancy", "Business Studies", "Economics", "Mathematics/Entrepreneurship", "English"];
-      } 
-      else if (stream === "Arts") {
-        subjects = ["History", "Political Science", "Geography", "Economics", "Psychology", "English"];
+    function populateChapters() {
+      const cls = document.getElementById("classSelect").value;
+      const board = document.getElementById("boardSelect").value;
+      const stream = document.getElementById("streamSelect").value;
+      const scienceCombo = document.getElementById("scienceSelect").value;
+
+      let subject = "";
+      if(cls >= 8 && cls <= 10) {
+        // default subjects for 8–10
+        subject = Object.keys(chaptersDB[cls])[0]; // just Maths for default for simplicity
+      } else if(cls === "11" || cls === "12") {
+        if(stream==="Science") subject = scienceCombo==="PCM"?"Maths":scienceCombo==="PCB"?"Biology":"Physics";
+        else if(stream==="Commerce") subject = "Accountancy";
+        else if(stream==="Arts") subject = "History";
+      }
+
+      const chapterSelect = document.getElementById("chapterSelect");
+      chapterSelect.innerHTML = "<option value=''>--Select Chapter--</option>";
+
+      if(subject && chaptersDB[cls][subject]) {
+        chaptersDB[cls][subject].forEach(ch => {
+          const opt = document.createElement("option");
+          opt.value = ch;
+          opt.innerText = ch;
+          chapterSelect.appendChild(opt);
+        });
       }
     }
 
-    // Render subject cards with click functionality
-    subjects.forEach(sub => {
-      const card = document.createElement("div");
-      card.className = "subjectCard";
-      card.innerText = sub;
+    function goToCourses() {
+      const selectedClass = document.getElementById("classSelect").value;
+      const selectedBoard = document.getElementById("boardSelect").value;
+      const selectedStream = document.getElementById("streamSelect").value;
+      const scienceOption = document.getElementById("scienceSelect").value;
+      const chapter = document.getElementById("chapterSelect").value;
 
-      card.addEventListener("click", () => {
-        localStorage.setItem("selectedSubject", sub);
-        window.location.href = "questions.html";
-      });
+      if(!selectedClass || !selectedBoard || (selectedClass>=11 && !selectedStream) || (selectedStream==="Science" && !scienceOption) || !chapter) {
+        alert("Please complete all selections!");
+        return;
+      }
 
-      subjectDiv.appendChild(card);
-    });
+      localStorage.setItem("selectedClass", selectedClass);
+      localStorage.setItem("selectedBoard", selectedBoard);
+      localStorage.setItem("selectedStream", selectedStream);
+      localStorage.setItem("scienceCombo", scienceOption);
+      localStorage.setItem("selectedChapter", chapter);
+
+      window.location.href="courses.html";
+    }
   </script>
-
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f5f5f5; }
-    .container { max-width: 800px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    #subjectList { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
-    .subjectCard {
-      border: 1px solid #444;
-      padding: 20px;
-      margin: 10px;
-      width: 150px;
-      cursor: pointer;
-      border-radius: 10px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-      transition: 0.3s;
-      background: #fefefe;
-      font-weight: bold;
-    }
-    .subjectCard:hover {
-      background: #e0f7fa;
-      transform: scale(1.05);
-    }
-  </style>
 </body>
 </html>
